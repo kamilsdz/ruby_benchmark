@@ -36,7 +36,6 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::FlatPrinter.new(result)
-    binding.pry
     printer.print(File.open('flat_report.txt', 'w+'), min_percent: min)
   end
 
@@ -64,6 +63,7 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::CallTreePrinter.new(result)
-    printer.print(File.open('callgrind_report.out.app', 'w+'))
+    printer.print(path: '.', profile: 'profile')
+    system("qcachegrind")
   end
 end

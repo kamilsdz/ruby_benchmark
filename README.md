@@ -7,20 +7,36 @@ Based on Ruby Performance Optimization - Alexander Dymo
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ruby_benchmark'
+gem 'ruby_benchmark', git: 'https://github.com/kamilsdz/ruby-benchmark.git'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install ruby_benchmark
-
 ## Usage
 
-TODO: Write usage instructions here
+Wrap your code:
+
+```ruby
+RubyBenchmark.run { block }
+```
+or
+```ruby
+RubyBenchmark.run do
+  block  
+end
+```
+
+
+Available methods: 
+
+- run for basic info
+- generate flat(min = 1) # min is optional
+- generate_graph(min = 1) # min is optional
+- generate_call_stack
+- generate_call_tree - recommended QCachegrind, install: brew install qcachegrind
+
 
 ## Development
 
