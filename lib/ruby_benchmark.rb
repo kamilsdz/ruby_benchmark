@@ -1,5 +1,6 @@
 require "ruby_benchmark/version"
 require 'ruby-prof'
+require 'benchmark'
 
 module RubyBenchmark
   extend self
@@ -36,7 +37,7 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::FlatPrinter.new(result)
-    printer.print(File.open('flat_report.txt', 'w+'), min_percent: min)
+    printer.print(File.open('tmp/profile/flat_report.txt', 'w+'), min_percent: min)
   end
 
   def generate_graph(min = 1)
@@ -45,7 +46,7 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::GraphPrinter.new(result)
-    printer.print(File.open('graph_report.txt', 'w+'), min_percent: min)
+    printer.print(File.open('tmp/profile/graph_report.txt', 'w+'), min_percent: min)
   end
 
   def generate_call_stack
@@ -54,7 +55,7 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::CallStackPrinter.new(result)
-    printer.print(File.open('call_stack_report.html', 'w+'))
+    printer.print(File.open('tmp/profile/call_stack_report.html', 'w+'))
   end
 
   def generate_call_tree
@@ -63,7 +64,7 @@ module RubyBenchmark
       yield
     end
     printer = ::RubyProf::CallTreePrinter.new(result)
-    printer.print(path: '.', profile: 'profile')
+    printer.print(path: '.', profile: 'tmp/profile/profile')
     system("qcachegrind")
   end
 end
