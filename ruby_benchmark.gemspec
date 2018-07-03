@@ -33,5 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_dependency 'ruby-prof'
-
+  spec.add_dependency 'stackprof'
 end

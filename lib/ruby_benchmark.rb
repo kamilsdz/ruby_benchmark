@@ -1,5 +1,7 @@
-require "ruby_benchmark/version"
+require 'ruby_benchmark/version'
+require 'fileutils'
 require 'ruby-prof'
+require 'stackprof'
 require 'benchmark'
 
 module RubyBenchmark
@@ -65,6 +67,35 @@ module RubyBenchmark
     end
     printer = ::RubyProf::CallTreePrinter.new(result)
     printer.print(path: '.', profile: 'tmp/profile/profile')
-    system("qcachegrind")
+    system('qcachegrind')
+  end
+
+  def generate_stackprof(options = 'flamegraph')
+    FileUtils::mkdir_p 'tmp/profile'
+    GC.disable
+    ::StackProf.run(
+      mode: :object,
+      out: 'tmp/profile/stackprof-object.dump',
+      raw: true,
+      interval: 1) do
+        yield
+      end
+
+    if options == 'text'
+      puts `stackprof tmp/profile/stackprof-object.dump --text`
+    elsif options == 'flamegraph'
+      `stackprof --flamegraph tmp/profile/stackprof-object.dump > tmp/profile/flamegraph`
+      link = `stackprof --flamegraph-viewer=tmp/profile/flamegraph`
+      puts link
+      link.slice!('open ')
+
+      if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+        system "start #{link}"
+      elsif RbConfig::CONFIG['host_os'] =~ /darwin/
+        system "open #{link}"
+      elsif RbConfig::CONFIG['host_os'] =~ /linux|bsd/
+        system "xdg-open #{link}"
+      end
+    end
   end
 end
